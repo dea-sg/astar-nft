@@ -6,7 +6,7 @@ interface IKamuiVerseNFT {
 
 	error AmountMustBeGreaterThanZero();
 
-	function setMintPrice(uint256 price) external;
-	function setBaseURI(string memory baseURI) external;
+	function setMintPrice(uint256 _price) external;
+	function setBaseURI(string memory __baseURI) external;
 	function withdraw(address _target) external;
 }

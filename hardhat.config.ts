@@ -21,20 +21,9 @@ const config = {
 		},
 	},
 	networks: {
-		rinkeby: {
-			url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ARCHEMY_KEY!}`,
+		zKatana: {
+			url: 'https://rpc.startale.com/zkatana',
 			accounts: [privateKey],
-		},
-		polygonMumbai: {
-			url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env
-				.ARCHEMY_KEY!}`,
-			accounts: [privateKey],
-		},
-	},
-	etherscan: {
-		apiKey: {
-			rinkeby: process.env.ETHERSCAN_API_KEY!,
-			polygonMumbai: process.env.POLYGONSCAN_API_KEY!,
 		},
 	},
 }

@@ -55,7 +55,7 @@ contract KamuiVerseNFT is
 			revert InsufficientPayment();
 		}
 		for (uint256 i = 0; i < amount; i++) {
-			uint256 assetId = getAssetId();
+			uint256 assetId = getAssetId(i);
 			_mint(_to, tokenId);
 			_setTokenURI(
 				tokenId,
@@ -65,18 +65,19 @@ contract KamuiVerseNFT is
 		}
 	}
 
-	function getAssetId() private view returns (uint256) {
-		uint256 random = getRandomNumber();
-		return random % 10;
-	}
-
-	function getRandomNumber() private view returns (uint256) {
-		return
-			uint256(
-				keccak256(
-					abi.encodePacked(block.number, block.timestamp, tokenId)
+	function getAssetId(uint256 _index) private view returns (uint256) {
+		uint256 random = uint256(
+			keccak256(
+				abi.encodePacked(
+					block.number,
+					blockhash(block.number - 1),
+					block.timestamp,
+					tokenId,
+					_index
 				)
-			);
+			)
+		);
+		return random % 10;
 	}
 
 	function withdraw(address _target) external onlyRole(DEFAULT_ADMIN_ROLE) {

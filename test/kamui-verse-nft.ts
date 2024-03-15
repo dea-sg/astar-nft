@@ -3,7 +3,6 @@ import { ethers } from 'hardhat'
 import { type Contract } from 'ethers'
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers'
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers'
-import { mine } from '@nomicfoundation/hardhat-network-helpers'
 
 describe('KamuiVerseNFT', () => {
 	const setup = async (): Promise<Contract> => {
@@ -133,6 +132,32 @@ describe('KamuiVerseNFT', () => {
 				const balanceAfter = await kamui.balanceOf(userAddress)
 				expect(balanceAfter - balanceBefore).to.equal(3)
 			})
+			it.skip('check random1', async () => {
+				const kamui = await loadFixture(setup)
+				const signers = await getSigners()
+				const userAddress = signers.user.address
+
+				for (let i = 0; i < 10; i++) {
+					await kamui.mint(userAddress, 1, { value: MINT_PRICE })
+				}
+				for (let i = 0; i < 10; i++) {
+					const tmp = await kamui.tokenURI(i)
+					console.log(tmp)
+				}
+			})
+			it.skip('check random2', async () => {
+				const kamui = await loadFixture(setup)
+				const signers = await getSigners()
+				const userAddress = signers.user.address
+
+				for (let i = 0; i < 3; i++) {
+					await kamui.mint(userAddress, 5, { value: MINT_PRICE * 5 })
+				}
+				for (let i = 0; i < 15; i++) {
+					const tmp = await kamui.tokenURI(i)
+					console.log(tmp)
+				}
+			})
 		})
 		describe('fail', () => {
 			it('amount is 0', async () => {
@@ -244,16 +269,6 @@ describe('KamuiVerseNFT', () => {
 					kamui.connect(signers.user).setBaseURI('https://example.com/')
 				).to.be.revertedWith(errorMessage)
 			})
-		})
-	})
-	describe.skip('getAssetId', () => {
-		it('success', async () => {
-			const kamui = await loadFixture(setup)
-			for (let i = 0; i < 10; i++) {
-				const tmp = await kamui.getAssetId()
-				console.log(tmp)
-				await mine(1)
-			}
 		})
 	})
 })

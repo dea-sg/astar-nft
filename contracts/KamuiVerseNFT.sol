@@ -31,7 +31,7 @@ contract KamuiVerseNFT is
 	}
 
 	function supportsInterface(
-		bytes4 interfaceId
+		bytes4 _interfaceId
 	)
 		public
 		view
@@ -39,22 +39,22 @@ contract KamuiVerseNFT is
 		returns (bool)
 	{
 		return
-			interfaceId == type(IKamuiVerseNFT).interfaceId ||
-			interfaceId == type(IAstarCampaignNFT).interfaceId ||
-			super.supportsInterface(interfaceId);
+			_interfaceId == type(IKamuiVerseNFT).interfaceId ||
+			_interfaceId == type(IAstarCampaignNFT).interfaceId ||
+			super.supportsInterface(_interfaceId);
 	}
 
 	function mint(
 		address _to,
-		uint256 amount
+		uint256 _amount
 	) external payable onlyRole(MINT_ROLE) {
-		if (amount == 0) {
+		if (_amount == 0) {
 			revert AmountMustBeGreaterThanZero();
 		}
-		if (msg.value != mintPrice * amount) {
+		if (msg.value != mintPrice * _amount) {
 			revert InsufficientPayment();
 		}
-		for (uint256 i = 0; i < amount; i++) {
+		for (uint256 i = 0; i < _amount; i++) {
 			uint256 assetId = getAssetId(i);
 			_mint(_to, tokenId);
 			_setTokenURI(
@@ -89,8 +89,10 @@ contract KamuiVerseNFT is
 	) external onlyRole(DEFAULT_ADMIN_ROLE) {
 		baseURI = __baseURI;
 	}
-	function setMintPrice(uint256 price) external onlyRole(DEFAULT_ADMIN_ROLE) {
-		mintPrice = price;
+	function setMintPrice(
+		uint256 _price
+	) external onlyRole(DEFAULT_ADMIN_ROLE) {
+		mintPrice = _price;
 	}
 	function _baseURI() internal view override returns (string memory) {
 		return baseURI;

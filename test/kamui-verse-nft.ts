@@ -1,15 +1,22 @@
 import { expect } from 'chai'
-import { ethers } from 'hardhat'
+import { ethers, upgrades } from 'hardhat'
 import { type Contract } from 'ethers'
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers'
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers'
 
 describe('KamuiVerseNFT', () => {
 	const setup = async (): Promise<Contract> => {
-		const kamui = await ethers.deployContract('KamuiVerseNFT')
-		await kamui.initialize()
+		const kamui = await getUupsContract()
 		await kamui.setBaseURI('https://kamui-verse-nft.com/')
 		return kamui
+	}
+	const getUupsContract = async (): Promise<Contract> => {
+		const testFactory = await ethers.getContractFactory('KamuiVerseNFT')
+
+		const contract = await upgrades.deployProxy(testFactory, [], {
+			kind: 'uups',
+		})
+		return contract
 	}
 	type Signers = {
 		deployer: HardhatEthersSigner
@@ -269,6 +276,41 @@ describe('KamuiVerseNFT', () => {
 					kamui.connect(signers.user).setBaseURI('https://example.com/')
 				).to.be.revertedWith(errorMessage)
 			})
+		})
+	})
+	describe('upgrade', () => {
+		it('contract is upgradable', async () => {
+			const kamui = await loadFixture(setup)
+			const signers = await getSigners()
+			const role = await kamui.DEFAULT_ADMIN_ROLE()
+			const result = await kamui.hasRole(role, signers.deployer.address)
+			expect(result).to.equal(true)
+
+			const factory = await ethers.getContractFactory(
+				'KamuiVerseNFT2',
+				signers.deployer
+			)
+			const next = await upgrades.upgradeProxy(
+				await kamui.getAddress(),
+				factory
+			)
+			const result2 = await next.hasRole(role, signers.deployer.address)
+			expect(result).to.equal(result2)
+			const val: number = (await next.getVal()) as number
+			expect(val).to.equal(7)
+		})
+		it('Cannot upgrade except for a deployer.', async () => {
+			const kumai = await loadFixture(setup)
+			const signers = await getSigners()
+			const factory = await ethers.getContractFactory(
+				'KamuiVerseNFT2',
+				signers.user
+			)
+			const role = await kumai.DEFAULT_ADMIN_ROLE()
+			const errorMessage = `AccessControl: account ${signers.user.address.toLowerCase()} is missing role ${role}`
+			await expect(
+				upgrades.upgradeProxy(await kumai.getAddress(), factory)
+			).to.be.revertedWith(errorMessage)
 		})
 	})
 })

@@ -1108,13 +1108,6 @@
   dependencies:
     antlr4ts "^0.5.0-alpha.4"
 
-"@solidity-parser/parser@^0.16.0":
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.16.1.tgz#f7c8a686974e1536da0105466c4db6727311253c"
-  integrity sha512-PdhRFNhbTtu3x8Axm0uYpqOy/lODYQK+MlYSgqIsq2L8SFYEHJPHNUiOTAJbDGzNjjr1/n9AcIayxafR/fWmYw==
-  dependencies:
-    antlr4ts "^0.5.0-alpha.4"
-
 "@solidity-parser/parser@^0.17.0":
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.17.0.tgz#52a2fcc97ff609f72011014e4c5b485ec52243ef"
@@ -1600,10 +1593,10 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-antlr4@^4.11.0:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/antlr4/-/antlr4-4.11.0.tgz#d7466f5044fa6e333c0ec821b30c6157f6b004ae"
-  integrity sha512-GUGlpE2JUjAN+G8G5vY+nOoeyNhHsXoIJwP1XF1oRw89vifA1K46T6SEkwLwr7drihN7I/lf0DIjKc4OZvBX8w==
+antlr4@^4.13.1-patch-1:
+  version "4.13.1-patch-1"
+  resolved "https://registry.yarnpkg.com/antlr4/-/antlr4-4.13.1-patch-1.tgz#946176f863f890964a050c4f18c47fd6f7e57602"
+  integrity sha512-OjFLWWLzDMV9rdFhpvroCWR4ooktNg9/nvVYSA5z28wuVpU36QUNuioR1XLnQtcjVlf8npjyz593PxnU/f/Cow==
 
 antlr4ts@^0.5.0-alpha.4:
   version "0.5.0-alpha.4"
@@ -5300,14 +5293,14 @@ solc@0.7.3:
     semver "^5.5.0"
     tmp "0.0.33"
 
-solhint@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/solhint/-/solhint-4.1.1.tgz#137c935ef028f01ba13687a1f237288d94dae1bf"
-  integrity sha512-7G4iF8H5hKHc0tR+/uyZesSKtfppFIMvPSW+Ku6MSL25oVRuyFeqNhOsXHfkex64wYJyXs4fe+pvhB069I19Tw==
+solhint@4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/solhint/-/solhint-4.5.2.tgz#a3fa101366dd1fb37009d24a9f16c99a4a745b5d"
+  integrity sha512-o7MNYS5QPgE6l+PTGOTAUtCzo0ZLnffQsv586hntSHBe2JbSDfkoxfhAOcjZjN4OesTgaX4UEEjCjH9y/4BP5w==
   dependencies:
-    "@solidity-parser/parser" "^0.16.0"
+    "@solidity-parser/parser" "^0.18.0"
     ajv "^6.12.6"
-    antlr4 "^4.11.0"
+    antlr4 "^4.13.1-patch-1"
     ast-parents "^0.0.1"
     chalk "^4.1.2"
     commander "^10.0.0"

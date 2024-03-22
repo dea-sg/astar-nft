@@ -4,9 +4,9 @@ import { ethers } from 'hardhat'
 
 async function main() {
 	const tokenFactory = await ethers.getContractFactory('KamuiVerseNFT')
-	const nft = tokenFactory.attach('0xcCb3F56AA3e998ee6A662EA822DCd3238C002933')
+	const nft = tokenFactory.attach('0xAb3E5dECb1B696CFd56f661478DC032b9D232c6E')
 	await nft.setBaseURI(
-		'https://arweave.net/z9dzyIPgjqF55GdVI9gHD0zJaEYF6bqYeaJNAgtupUg/'
+		'https://arweave.net/8lIwCR0f_ks7V94xIpe_dJqHmYTsNFuHbNSfy-JCAlk/'
 	)
 }
 

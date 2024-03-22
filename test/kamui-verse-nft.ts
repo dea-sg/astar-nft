@@ -43,7 +43,7 @@ describe('KamuiVerseNFT', () => {
 					signers.deployer.address
 				)
 				expect(hasAdminRole).to.equal(true)
-				const mintRole = await kamui.MINT_ROLE()
+				const mintRole = await kamui.MINTER_ROLE()
 				const hasMintRole = await kamui.hasRole(
 					mintRole,
 					signers.deployer.address
@@ -51,6 +51,8 @@ describe('KamuiVerseNFT', () => {
 				expect(hasMintRole).to.equal(true)
 				const mintPrice = await kamui.mintPrice()
 				expect(mintPrice).to.equal(MINT_PRICE)
+				const owner = await kamui.owner()
+				expect(owner).to.equal(signers.deployer.address)
 			})
 		})
 		describe('fail', () => {
@@ -101,16 +103,20 @@ describe('KamuiVerseNFT', () => {
 			expect(id).to.equal(false)
 		})
 	})
-	describe('mint', () => {
+	describe('mint, totalSupply', () => {
 		describe('success', () => {
 			it('mint', async () => {
 				const kamui = await loadFixture(setup)
 				const signers = await getSigners()
 				const userAddress = signers.user.address
 				const balanceBefore = await kamui.balanceOf(userAddress)
+				const totalSupplyBefore = await kamui.totalSupply()
+				expect(totalSupplyBefore).to.equal(0)
 				await kamui.mint(userAddress, 1, { value: MINT_PRICE })
 				const balanceAfter = await kamui.balanceOf(userAddress)
 				expect(balanceAfter - balanceBefore).to.equal(1)
+				const totalSupplyAfter = await kamui.totalSupply()
+				expect(totalSupplyAfter - totalSupplyBefore).to.equal(1)
 			})
 			it('get tokenURI', async () => {
 				const kamui = await loadFixture(setup)
@@ -126,18 +132,54 @@ describe('KamuiVerseNFT', () => {
 				const signers = await getSigners()
 				const userAddress = signers.user.address
 				const balanceBefore = await kamui.balanceOf(userAddress)
+				const totalSupplyBefore = await kamui.totalSupply()
+				expect(totalSupplyBefore).to.equal(0)
 				await kamui.mint(userAddress, 2, { value: MINT_PRICE * 2 })
 				const balanceAfter = await kamui.balanceOf(userAddress)
 				expect(balanceAfter - balanceBefore).to.equal(2)
+				const totalSupplyAfter = await kamui.totalSupply()
+				expect(totalSupplyAfter - totalSupplyBefore).to.equal(2)
 			})
 			it('mint 3', async () => {
 				const kamui = await loadFixture(setup)
 				const signers = await getSigners()
 				const userAddress = signers.user.address
 				const balanceBefore = await kamui.balanceOf(userAddress)
+				const totalSupplyBefore = await kamui.totalSupply()
+				expect(totalSupplyBefore).to.equal(0)
 				await kamui.mint(userAddress, 3, { value: MINT_PRICE * 3 })
 				const balanceAfter = await kamui.balanceOf(userAddress)
 				expect(balanceAfter - balanceBefore).to.equal(3)
+				const totalSupplyAfter = await kamui.totalSupply()
+				expect(totalSupplyAfter - totalSupplyBefore).to.equal(3)
+			})
+			it('mint 3 and mint 2', async () => {
+				const kamui = await loadFixture(setup)
+				const signers = await getSigners()
+				const userAddress = signers.user.address
+				const balanceBefore = await kamui.balanceOf(userAddress)
+				const totalSupplyBefore = await kamui.totalSupply()
+				expect(totalSupplyBefore).to.equal(0)
+				await kamui.mint(userAddress, 3, { value: MINT_PRICE * 3 })
+				await kamui.mint(userAddress, 2, { value: MINT_PRICE * 2 })
+				const balanceAfter = await kamui.balanceOf(userAddress)
+				expect(balanceAfter - balanceBefore).to.equal(5)
+				const totalSupplyAfter = await kamui.totalSupply()
+				expect(totalSupplyAfter - totalSupplyBefore).to.equal(5)
+			})
+			it('mint 1000', async () => {
+				const kamui = await loadFixture(setup)
+				const signers = await getSigners()
+				const userAddress = signers.user.address
+				const balanceBefore = await kamui.balanceOf(userAddress)
+				const totalSupplyBefore = await kamui.totalSupply()
+				expect(totalSupplyBefore).to.equal(0)
+				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
+				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
+				const balanceAfter = await kamui.balanceOf(userAddress)
+				expect(balanceAfter - balanceBefore).to.equal(1000)
+				const totalSupplyAfter = await kamui.totalSupply()
+				expect(totalSupplyAfter - totalSupplyBefore).to.equal(1000)
 			})
 			it.skip('check random1', async () => {
 				const kamui = await loadFixture(setup)
@@ -196,13 +238,39 @@ describe('KamuiVerseNFT', () => {
 				const kamui = await loadFixture(setup)
 				const signers = await getSigners()
 				const userAddress = signers.user.address
-				const mintRole = await kamui.MINT_ROLE()
+				const mintRole = await kamui.MINTER_ROLE()
 				const errorMessage = `AccessControl: account ${userAddress.toLowerCase()} is missing role ${mintRole}`
 				await expect(
 					kamui
 						.connect(signers.user)
 						.mint(userAddress, 1, { value: MINT_PRICE })
 				).to.be.revertedWith(errorMessage)
+			})
+			it('can not mint to contract address', async () => {
+				const kamui = await loadFixture(setup)
+				const supportsTest = await ethers.deployContract('SupportsInterfaceTest')
+				await expect(
+					kamui
+						.mint(await supportsTest.getAddress(), 1, { value: MINT_PRICE })
+				).to.be.revertedWith("ERC721: transfer to non ERC721Receiver implementer")
+			})
+			it('mint 1001', async () => {
+				const kamui = await loadFixture(setup)
+				const signers = await getSigners()
+				const userAddress = signers.user.address
+				const balanceBefore = await kamui.balanceOf(userAddress)
+				const totalSupplyBefore = await kamui.totalSupply()
+				expect(totalSupplyBefore).to.equal(0)
+				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
+				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
+				const balanceAfter = await kamui.balanceOf(userAddress)
+				expect(balanceAfter - balanceBefore).to.equal(1000)
+				const totalSupplyAfter = await kamui.totalSupply()
+				expect(totalSupplyAfter - totalSupplyBefore).to.equal(1000)
+				await expect(
+					kamui
+						.mint(userAddress, 1, { value: MINT_PRICE })
+				).to.be.revertedWithCustomError(kamui, 'NotMintable')
 			})
 		})
 	})

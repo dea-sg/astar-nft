@@ -1,11 +1,13 @@
-// SPDX-License-Identifier: MPL-2.0
+// Sources flattened with hardhat v2.19.5 https://hardhat.org
+
+// SPDX-License-Identifier: MIT AND MPL-2.0
+pragma solidity =0.8.19;
 
 // File @openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (access/IAccessControl.sol)
 
-pragma solidity =0.8.19;
 
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
@@ -346,6 +348,7 @@ library AddressUpgradeable {
 // OpenZeppelin Contracts (last updated v4.9.0) (proxy/utils/Initializable.sol)
 
 
+
 /**
  * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed
  * behind a proxy. Since proxied contracts do not make use of a constructor, it's common to move constructor logic to an
@@ -511,6 +514,7 @@ abstract contract Initializable {
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.4) (utils/Context.sol)
+
 
 
 /**
@@ -1363,6 +1367,103 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
 }
 
 
+// File @openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol@v4.9.6
+
+// Original license: SPDX_License_Identifier: MIT
+// OpenZeppelin Contracts (last updated v4.9.0) (access/Ownable.sol)
+
+
+
+
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+abstract contract OwnableUpgradeable is Initializable, ContextUpgradeable {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    function __Ownable_init() internal onlyInitializing {
+        __Ownable_init_unchained();
+    }
+
+    function __Ownable_init_unchained() internal onlyInitializing {
+        _transferOwnership(_msgSender());
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        _checkOwner();
+        _;
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if the sender is not the owner.
+     */
+    function _checkOwner() internal view virtual {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby disabling any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Internal function without access restriction.
+     */
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[49] private __gap;
+}
+
+
 // File @openzeppelin/contracts-upgradeable/interfaces/IERC165Upgradeable.sol@v4.9.6
 
 // Original license: SPDX_License_Identifier: MIT
@@ -1375,6 +1476,7 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.9.0) (token/ERC721/IERC721.sol)
+
 
 
 /**
@@ -1508,6 +1610,7 @@ interface IERC721Upgradeable is IERC165Upgradeable {
 
 // Original license: SPDX_License_Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (interfaces/IERC721.sol)
+
 
 
 
@@ -2108,6 +2211,7 @@ interface IERC721ReceiverUpgradeable {
 
 
 
+
 /**
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
@@ -2675,12 +2779,15 @@ interface IAstarCampaignNFT {
 
 // File contracts/IKamuiVerseNFT.sol
 
+// Original license: SPDX_License_Identifier: MPL-2.0
 
 
 interface IKamuiVerseNFT {
 	error InsufficientPayment();
 
 	error AmountMustBeGreaterThanZero();
+
+	error NotMintable();
 
 	function setMintPrice(uint256 _price) external;
 	function setBaseURI(string memory __baseURI) external;
@@ -2690,14 +2797,21 @@ interface IKamuiVerseNFT {
 
 // File contracts/KamuiVerseNFT.sol
 
+// Original license: SPDX_License_Identifier: MPL-2.0
 
 
 
 
 
 
+
+
+// マーケットプレイスで、NFTの情報を設定するために必要らしいので、
+// OwnableとAccessControlの同時継承を行う。
+// https://hackmd.io/@maario/BJLiFsd6a
 
 contract KamuiVerseNFT is
+	OwnableUpgradeable, 
 	AccessControlUpgradeable,
 	UUPSUpgradeable,
 	ERC721URIStorageUpgradeable,
@@ -2708,15 +2822,19 @@ contract KamuiVerseNFT is
 	uint256 public mintPrice;
 	uint256 public tokenId;
 	string public baseURI;
+	uint256 public totalSupply;
 
-	bytes32 public constant MINT_ROLE = keccak256("MINT_ROLE");
+	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+	uint256 public constant MAX_MINT_COUNT = 1000;
 
 	function initialize() public initializer {
+		__Ownable_init();
 		__UUPSUpgradeable_init();
 		__ERC721_init("Kamui", "KAMUI");
 		_grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
-		_grantRole(MINT_ROLE, _msgSender());
+		_grantRole(MINTER_ROLE, _msgSender());
 		mintPrice = 0.001 ether;
+		totalSupply = 0;
 	}
 
 	function supportsInterface(
@@ -2736,21 +2854,25 @@ contract KamuiVerseNFT is
 	function mint(
 		address _to,
 		uint256 _amount
-	) external payable onlyRole(MINT_ROLE) {
+	) external payable onlyRole(MINTER_ROLE) {
 		if (_amount == 0) {
 			revert AmountMustBeGreaterThanZero();
 		}
 		if (msg.value != mintPrice * _amount) {
 			revert InsufficientPayment();
 		}
+		if (totalSupply + _amount > MAX_MINT_COUNT) {
+			revert NotMintable();
+		}
 		for (uint256 i = 0; i < _amount; i++) {
 			uint256 assetId = getAssetId(i);
-			_mint(_to, tokenId);
+			_safeMint(_to, tokenId);
 			_setTokenURI(
 				tokenId,
 				string(abi.encodePacked(assetId.toString(), ".json"))
 			);
 			tokenId++;
+			totalSupply++;
 		}
 	}
 

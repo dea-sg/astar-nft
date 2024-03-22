@@ -5,9 +5,13 @@ import { ethers } from 'hardhat'
 async function main() {
 	const tokenFactory = await ethers.getContractFactory('KamuiVerseNFT')
 	const nft = tokenFactory.attach('0xAb3E5dECb1B696CFd56f661478DC032b9D232c6E')
-	await nft.mint('0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC', 30, {
-		value: '30000000000000000',
-	})
+	const mintRole = await nft.MINT_ROLE()
+	// ネットワークによって、切り替える
+	// https://hackmd.io/@maario/BJLiFsd6a#Contract-addresses
+	// testnet
+	await nft.grantRole(mintRole, '0x7D106176F9105E7a0f0778F044B49a78b98dE5d1')
+	// mainnet
+	//await nft.grantRole(mintRole, '0xCB1095416b6A8e0C3ea39F8fe6Df84f4179C93C2')
 }
 
 main()

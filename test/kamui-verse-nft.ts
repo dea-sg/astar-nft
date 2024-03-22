@@ -174,8 +174,8 @@ describe('KamuiVerseNFT', () => {
 				const balanceBefore = await kamui.balanceOf(userAddress)
 				const totalSupplyBefore = await kamui.totalSupply()
 				expect(totalSupplyBefore).to.equal(0)
-				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
-				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
+				await kamui.mint(userAddress, 500, { value: '500000000000000000' })
+				await kamui.mint(userAddress, 500, { value: '500000000000000000' })
 				const balanceAfter = await kamui.balanceOf(userAddress)
 				expect(balanceAfter - balanceBefore).to.equal(1000)
 				const totalSupplyAfter = await kamui.totalSupply()
@@ -248,11 +248,14 @@ describe('KamuiVerseNFT', () => {
 			})
 			it('can not mint to contract address', async () => {
 				const kamui = await loadFixture(setup)
-				const supportsTest = await ethers.deployContract('SupportsInterfaceTest')
+				const supportsTest = await ethers.deployContract(
+					'SupportsInterfaceTest'
+				)
 				await expect(
-					kamui
-						.mint(await supportsTest.getAddress(), 1, { value: MINT_PRICE })
-				).to.be.revertedWith("ERC721: transfer to non ERC721Receiver implementer")
+					kamui.mint(await supportsTest.getAddress(), 1, { value: MINT_PRICE })
+				).to.be.revertedWith(
+					'ERC721: transfer to non ERC721Receiver implementer'
+				)
 			})
 			it('mint 1001', async () => {
 				const kamui = await loadFixture(setup)
@@ -261,15 +264,14 @@ describe('KamuiVerseNFT', () => {
 				const balanceBefore = await kamui.balanceOf(userAddress)
 				const totalSupplyBefore = await kamui.totalSupply()
 				expect(totalSupplyBefore).to.equal(0)
-				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
-				await kamui.mint(userAddress, 500, { value: "500000000000000000" })
+				await kamui.mint(userAddress, 500, { value: '500000000000000000' })
+				await kamui.mint(userAddress, 500, { value: '500000000000000000' })
 				const balanceAfter = await kamui.balanceOf(userAddress)
 				expect(balanceAfter - balanceBefore).to.equal(1000)
 				const totalSupplyAfter = await kamui.totalSupply()
 				expect(totalSupplyAfter - totalSupplyBefore).to.equal(1000)
 				await expect(
-					kamui
-						.mint(userAddress, 1, { value: MINT_PRICE })
+					kamui.mint(userAddress, 1, { value: MINT_PRICE })
 				).to.be.revertedWithCustomError(kamui, 'NotMintable')
 			})
 		})

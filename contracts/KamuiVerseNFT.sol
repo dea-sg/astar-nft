@@ -14,7 +14,7 @@ import {IAstarCampaignNFT} from "./IAstarCampaignNFT.sol";
 // https://hackmd.io/@maario/BJLiFsd6a
 
 contract KamuiVerseNFT is
-	OwnableUpgradeable, 
+	OwnableUpgradeable,
 	AccessControlUpgradeable,
 	UUPSUpgradeable,
 	ERC721URIStorageUpgradeable,

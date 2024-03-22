@@ -25,6 +25,10 @@ const config = {
 			url: 'https://rpc.startale.com/zkatana',
 			accounts: [privateKey],
 		},
+		astarZkEVM: {
+			url: 'https://rpc.startale.com/astar-zkevm',
+			accounts: [privateKey],
+		},
 	},
 }
 

@@ -30,3 +30,7 @@ main()
 // 新仕様書に則ったやつ
 // 0x48723BAe17d355F9ed916ED246c5e51e7205f3AD impl
 // 0xAb3E5dECb1B696CFd56f661478DC032b9D232c6E proxy
+
+// npx hardhat run dist/scripts/deploy.js --network astarZkEVM
+// 0xF688573D7B154DEc538234CBd2D8e3f0fdadeAd6 impl
+// 0xcCb3F56AA3e998ee6A662EA822DCd3238C002933 proxy
